@@ -104,9 +104,59 @@ or use Postman
   }
   ```
 
+#### 4. Get all blogs 
+`flask run`
+on browser visit http://127.0.0.1:5000/posts
+
+```python
+flask shell
+from app import db
+from sqlalchemy import inspect
+from app.models import Post, User
+
+inspector = inspect(db.engine)
+tables = inspector.get_table_names()
+print(tables)
+
+# Fetch all posts
+posts = Post.query.all()
+
+# Print each post's details
+for post in posts:
+    print(f"Post ID: {post.id}, Title: {post.title}, Content: {post.body}")
+
+# Or fetch a specific post by ID
+post = Post.query.filter_by(id=1).first()
+print(post.title, post.body)  # Adjust according to your Post model attributes
+
+# Fetch all users
+users = User.query.all()
+
+# Print each user's details
+for user in users:
+    print(f"User ID: {user.id}, Username: {user.username}, Email: {user.email}")
+
+# Or fetch a specific user by ID
+user = User.query.filter_by(id=1).first()
+print(user.username, user.email)  # Adjust according to your User model attributes
+```
+
 #### Notes:
 `config.py`: store configuration
 `app/__init__.py`: create the app
 `app/models.py`: define models
 `app/routes.py`: define routes for frontend
 `run.py`: start this script to run the app
+
+#### TODOs
+- [x] create a blog via api
+- [x] get all blogs
+- [x] get a blog by its id
+- [x] update a blog by its id
+- [x] delete a blog by its id
+
+- [x] find a way to see the tables/contents in db
+
+- [ ] create users
+- [ ] make blogs assosiate with user
+- [ ] user signup/login/logout 
