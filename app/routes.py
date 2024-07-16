@@ -10,6 +10,7 @@ def index():
     return 'Hello, World!'
 
 @bp.route('/posts', methods=['POST'])
+@auth.login_required
 def create_post():
     data = request.get_json()
     new_post = Post(title=data['title'], body=data['body'])
@@ -23,11 +24,13 @@ def get_posts():
     return jsonify([post.to_dict() for post in posts])
 
 @bp.route('/posts/<int:id>', methods=['GET'])
+@auth.login_required
 def get_post(id):
     post = Post.query.get_or_404(id)
     return jsonify(post.to_dict())
 
 @bp.route('/posts/<int:id>', methods=['PUT'])
+@auth.login_required
 def update_post(id):
     post = Post.query.get_or_404(id)
     data = request.get_json()
