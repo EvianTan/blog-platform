@@ -1,162 +1,144 @@
-# blog-platform
-A blog platform which written with Python Flask RESTful APIs
+# Blog Platform
+A simple blog platform built with Flask, SQLAlchemy, and SQLite. The platform supports user authentication and allows users to create, read, update, and delete blog posts.
 
-## Build a RESTful API for a simple blogging platform
 
-### Requirements:
-1. Design and implement a RESTful API using either Python Flask or Django.
-2. The API should have endpoints for:
-  - Creating a new blog post
-  - Retrieving a list of all blog posts
-  - Retrieving a single blog post by its ID
-  - Updating an existing blog post
-  - Deleting a blog post
-3. Implement basic authentication for the API. Users should be able to sign up, sign in, and authenticate their requests to create, update, or delete blog posts.
-4. Use a database of your choice (e.g., MongoDB, PostgreSQL, MySQL) to store blog post data.
-5. Write unit tests to ensure the reliability of your code.
+## Table of Contents
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [API Endpoints](#api-endpoints)
+- [Testing](#testing)
+- [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
 
-### Evaluation Criteria:
-1. Code Quality: Assess the cleanliness, readability, and organization of the code. Look for the effective use of coding best practices and design patterns.
-2. System Architecture: Evaluate the architecture of the system, considering factors such as scalability, maintainability, and extensibility.
-3. RESTful Design: Check if the API endpoints adhere to RESTful principles and conventions.
-   Authentication: Verify the implementation of authentication mechanisms and security measures.
-4. Database Usage: Evaluate the interaction with the chosen database, including data modeling and query optimization.
-5. Testing: Review the completeness and effectiveness of the unit tests.
 
-### Submission Guidelines:
-1. Provide the source code of your project, along with any necessary setup instructions.
-2. Include documentation explaining your design decisions, trade-offs made, and any additional features or improvements you would have implemented with more time.
+## Features
+- User authentication (sign up, sign in)
+- Create, read, update, and delete blog posts
+- Basic HTTP authentication for protected routes
+- SQLite database for data persistence
 
-### References:
-https://www.codementor.io/@olawalealadeusi896/restful-api-with-python-flask-framework-and-postgres-db-part-1-kbrwbygx5
-ChatGPT
 
-### Steps/Plan
-Keyword: Python, Flask, CRUD, user, authentication, blog
+## Installation
+1. **Clone the repository**:
+    ```sh
+    git clone https://github.com/EvianTan/blog-platform.git
+    cd blog-platform
+    ```
+2. **Set up a virtual environment (Optional but recommended)**:
+    ```sh
+    python -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
+3. **Install dependencies**:
+    >Note: Ensure Python and `pip` are installed on your system. If not, download and install Python from [python.org](https://www.python.org/downloads/).
+    ```sh
+    pip install -r requirements.txt
+    ```
+4. **Set up the database**:
+    ```sh
+    flask db init
+    flask db migrate -m "Initial migration"
+    flask db upgrade
+    ```
+5. **Seed the database with initial testing data** (optional):
+    >Note: Populating the database with initial users and posts data
+    ```sh
+    python seed.py
+    ```
 
-### Dependencies
-Python3
-pip3
-```bash
-curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-python3 get-pip.py
-```
+## Usage
+1. **Run the application**:
+    ```sh
+    flask run
+    ```
+2. **Access the application**:
+    Open your browser and go to `http://127.0.0.1:5000`.
+3. **Test API Endpoints with Postman**:
+    - Import the Postman collection `(Python Flask Blog Platform.postman_collection.json`) into your Postman application.
+    - Modify the requests as needed to suit your testing or integration requirements.
+  
 
-#### 1. Dependencies Install
-```bash
-pip3 install Flask Flask-SQLAlchemy Flask-Migrate Flask-HTTPAuth
-```
+## API Endpoints
+### Authentication
+- **Sign Up**: `POST /auth/signup`
+    ```json
+    {
+        "username": "yourusername",
+        "password": "yourpassword"
+    }
+    ```
+- **Sign In**: `POST /auth/signin`
+    - Use Basic Auth with your username and password.
+### Blog Posts
+- **Create Post**: `POST /posts`
+    ```json
+    {
+        "title": "Post Title",
+        "body": "Post Body"
+    }
+    ```
+    - Protected route, requires authentication.
+- **Get All Posts**: `GET /posts`
+- **Get Single Post**: `GET /posts/<id>`
+    - Protected route, requires authentication.
+- **Update Post**: `PUT /posts/<id>`
+    ```json
+    {
+        "title": "Updated Title",
+        "body": "Updated Body"
+    }
+    ```
+    - Protected route, requires authentication.
+- **Delete Post**: `DELETE /posts/<id>`
+    - Protected route, requires authentication.
 
-#### 2. Set up the project structure:
-```bash
-blogging_platform/
-├── app/
-│   ├── __init__.py
-│   ├── auth.py
-│   ├── models.py
-│   ├── routes.py
-├── migrations/
-├── tests/
-│   ├── __init__.py
-│   ├── test_routes.py
-├── config.py
-├── run.py
-└── requirements.txt
-```
 
-```bash
-# Create requirements.txt
-echo "Flask
-Flask-SQLAlchemy
-Flask-Migrate
-Flask-HTTPAuth" > requirements.txt
+## Testing
+1. **Run tests**:
+    ```sh
+    python -m unittest discover tests
+    ```
+2. **Example test case**:
+    ```python
+    def test_signup(self):
+        response = self.client.post('/auth/signup', json={'username': 'newuser', 'password': 'newpassword'})
+        self.assertEqual(response.status_code, 201)
+    ```
 
-# Install dependencies from requirements.txt
-pip3 install -r requirements.txt
-```
 
-setup the database
-```bash
-flask db init
-flask db migrate -m "Initial migration"
-flask db upgrade
-```
-
-```bash
-set FLASK_APP=run.py
-```
-
-#### 3. Create a blog
-```bash
-curl -u username:password -X POST -H "Content-Type: application/json" -d '{"title": "My First Post", "body": "This is the content of my first post."}' http://127.0.0.1:5000/posts
-
-```
-or use Postman
-- new post request
-- url: http://127.0.0.1:5000/posts
-- Go to the "Authorization" tab, choose "Basic Auth," and enter your username and password.
-- Go to the "Headers" tab, add a new header with the key Content-Type and value application/json
-- Go to the "Body" tab, choose "raw," and enter the following JSON:
-  ```json
-  {
-      "title": "My First Post",
-      "content": "This is the content of my first post."
-  }
-  ```
-
-#### 4. Get all blogs 
-`flask run`
-on browser visit http://127.0.0.1:5000/posts
-
+## Configuration
+Configuration settings are in `config.py`. You can override them using environment variables.
+### Default Config
 ```python
-flask shell
-from app import db
-from sqlalchemy import inspect
-from app.models import Post, User
+import os
 
-inspector = inspect(db.engine)
-tables = inspector.get_table_names()
-print(tables)
-
-# Fetch all posts
-posts = Post.query.all()
-
-# Print each post's details
-for post in posts:
-    print(f"Post ID: {post.id}, Title: {post.title}, Content: {post.body}")
-
-# Or fetch a specific post by ID
-post = Post.query.filter_by(id=1).first()
-print(post.title, post.body)  # Adjust according to your Post model attributes
-
-# Fetch all users
-users = User.query.all()
-
-# Print each user's details
-for user in users:
-    print(f"User ID: {user.id}, Username: {user.username}, Email: {user.email}")
-
-# Or fetch a specific user by ID
-user = User.query.filter_by(id=1).first()
-print(user.username, user.email)  # Adjust according to your User model attributes
+class Config:
+    SECRET_KEY = os.environ.get('SECRET_KEY') or 'a_secret_key'
+    SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///instance/blogging_platform.db'
+    SQLALCHEMY_TRACK_MODIFICATIONS = False
 ```
 
-#### Notes:
-`config.py`: store configuration
-`app/__init__.py`: create the app
-`app/models.py`: define models
-`app/routes.py`: define routes for frontend
-`run.py`: start this script to run the app
 
-#### TODOs
-- [x] create a blog via api
-- [x] get all blogs
-- [x] get a blog by its id
-- [x] update a blog by its id
-- [x] delete a blog by its id
+## Troubleshooting
+### Common Issues
+1. Database Errors:
+  - Ensure SQLALCHEMY_DATABASE_URI points to the correct database file.
+  - If you encounter missing tables, run flask db upgrade to apply migrations.
+2. Authentication Issues:
+  - Use Basic Auth for protected routes.
+  - Clear browser cache or use incognito mode to test authentication changes.
+3. Environment Setup:
+  - Ensure your virtual environment is activated before running commands.
+  - Install all dependencies listed in requirements.txt.
 
-- [x] find a way to see the tables/contents in db
 
-- [ ] create users
-- [ ] make blogs assosiate with user
-- [ ] user signup/login/logout 
+## License
+This project is licensed under the MIT License. 
+### MIT License
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+1. The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+2. The software is provided "as is", without warranty of any kind, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
+
+For more details, see the [LICENSE](LICENSE) file.
