@@ -14,9 +14,6 @@ migrations/alembic.ini
 migrations/env.py
 migrations/versions/*.pyc
 
-# Other generated files
-get-pip.py
-
 # Environment-specific files
 config.py
 
